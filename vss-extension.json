@@ -1,0 +1,74 @@
+{
+  "manifestVersion": 1,
+  "id": "postman-report",
+  "name": "Postman Report",
+  "publisher": "Finastra",
+  "public": false,
+  "author": "Maciej Maciejewski",
+  "version": "1.0.0",
+  "description": "Embed Postman HTML reports in Azure Pipelines",
+  "galleryFlags": [
+    "Preview"
+  ],
+  "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
+  "scopes": [
+    "vso.build_execute",
+    "vso.release_execute"
+  ],
+  "icons": {
+    "default": "images/postman-logo.png"
+  },
+  "demands": [
+    "api-version/3.0"
+  ],
+  "tags": [
+    "Postman",
+    "Build",
+    "Release",
+    "Azure Pipelines",
+    "Visual Studio Extensions"
+  ],
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "content": {
+    "license": {
+      "path": "LICENSE"
+    }
+  },
+  "branding": {
+    "color": "rgb(220, 235, 252)",
+    "theme": "light"
+  },
+  "files": [
+    {
+      "path": "tab.html",
+      "addressable": true
+    }
+  ],
+  "contributions": [
+    {
+      "id": "build-postman-tab",
+      "type": "ms.vss-build-web.build-results-tab",
+      "description": "Embed Protractor HTML report in Azure Pipelines",
+      "targets": ["ms.vss-build-web.build-results-view"],
+      "properties": {
+        "name": "Postman",
+        "uri": "tab.html",
+        "registeredObjectId": "registeredEnvironmentObject",
+        "supportsTasks": ["f5384bf0-1b5c-11ea-b0cc-5b064956a213"],
+        "dynamic": true
+      },
+      "includes": ["ms.vss-releaseManagement-web.release-service-data-external"]
+    },
+    {
+      "id": "UploadPostmanHtmlReport",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "tasks/UploadPostmanHtmlReport",
+        "displayName": "Upload Postman Report"
+      }
+    }
+  ]
+}
