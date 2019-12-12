@@ -4,7 +4,7 @@
   "description": "Embed Postman HTML result into build and release tab",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,11 @@
   },
   "homepage": "https://github.com/maciejmaciejewski/azure-pipelines-postman#readme",
   "devDependencies": {
-    "@types/node": "^12.12.16",
-    "typescript": "^3.7.3"
+    "@types/node": "^11.9.4",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "fetch": "^1.1.0",
+    "vss-web-extension-sdk": "^5.141.0"
   }
 }

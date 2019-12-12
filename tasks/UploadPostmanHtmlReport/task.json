@@ -12,25 +12,25 @@
   ],
   "demands": [],
   "version": {
-    "Major": "0",
-    "Minor": "1",
-    "Patch": "0"
+    "Major": "1",
+    "Minor": "0",
+    "Patch": "20"
   },
   "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "UploadPostmanHtmlReport $(message)",
+  "instanceNameFormat": "UploadPostmanHtmlReport",
   "inputs": [
     {
       "name": "cwd",
       "type": "filePath",
       "label": "Report Path",
-      "defaultValue": "",
+      "defaultValue": "$(System.DefaultWorkingDirectory)",
       "required": false,
       "helpMarkDown": "Current working directory when UploadPostmanHtmlReport is run."
     }
   ],
   "execution": {
-    "Node": {
-      "target": "sample.js",
+    "Node10": {
+      "target": "index.js",
       "argumentFormat": ""
     }
   }

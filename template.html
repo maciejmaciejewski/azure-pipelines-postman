@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  </head>
+  <body>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Report Name</th>
+          <th>URL</th>
+        </tr>
+      </thead>
+      <tbody>
+      {{#links}}
+        <tr class="bg-danger">
+          <td>{{name}}</td>
+          <td>
+            <a target="_blank" href="{{href}}">report</a>
+          </td>
+        </tr>
+      {{/links}}
+      </tbody>
+    </table>
+  </body>
+</html>

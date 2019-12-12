@@ -1,4 +1,4 @@
 node_modules/
-tasks/**/*.js.map
-tasks/**/*.js
 package-lock.json
+dist/
+out/

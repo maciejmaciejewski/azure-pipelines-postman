@@ -1,27 +1,15 @@
-import * as tl from 'azure-pipelines-task-lib/task'
-import { resolve, basename } from 'path'
-import * as globby from 'globby'
-import { readFileSync, writeFileSync } from 'fs'
-import { load } from 'cheerio'
+const tl = require('azure-pipelines-task-lib/task')
+const { resolve, basename } = require('path')
+const globby = require('globby')
+const { readFileSync, writeFileSync } = require('fs')
+const { load } = require('cheerio')
 const forbidenKeys = ['password', 'client_secret', 'access_token', 'refresh_token']
 
-
-
-
-async function run () : Promise<void> {
+function run () {
   let cwd = resolve(tl.getPathInput('cwd', true))
-  let templateFile = readFileSync('template.html')
 
-  const templateProperties = {
-    name: 'template.html',
-    type: 'postman.template'
-  }
-
-  tl.command('task.addattachment', templateProperties, './template.html')
-
-
-  globby([`${cwd}/*.html`]).then(files => {
-    files.forEach(file => {
+  let files = globby.sync([cwd], {expandDirectories : {files: ['*'], extensions: ['html', 'htm']}})
+  files.forEach(file => {
       tl.debug(`Reading report ${file}`)
       const fileContent = readFileSync(file).toString()
       const document = load(fileContent)
@@ -41,7 +29,6 @@ async function run () : Promise<void> {
 
       tl.command('task.addattachment', attachmentProperties, file)
     })
-  })
 }
 
 function removeTokenFromHeader (document) {
@@ -72,3 +59,5 @@ function removeForbidenKeys (document, selector) {
     }
   })
 }
+
+run()

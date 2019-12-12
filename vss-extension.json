@@ -2,10 +2,10 @@
   "manifestVersion": 1,
   "id": "postman-report",
   "name": "Postman Report",
-  "publisher": "Finastra",
-  "public": false,
+  "publisher": "MaciejMaciejewski",
+  "public": true,
   "author": "Maciej Maciejewski",
-  "version": "1.0.0",
+  "version": "0.1.22",
   "description": "Embed Postman HTML reports in Azure Pipelines",
   "galleryFlags": [
     "Preview"
@@ -16,7 +16,7 @@
     "vso.release_execute"
   ],
   "icons": {
-    "default": "images/postman-logo.png"
+    "default": "images/postman-icon-large.png"
   },
   "demands": [
     "api-version/3.0"
@@ -32,6 +32,9 @@
     "Azure Pipelines"
   ],
   "content": {
+    "details": {
+      "path": "overview.md"
+    },
     "license": {
       "path": "LICENSE"
     }
@@ -43,6 +46,42 @@
   "files": [
     {
       "path": "tab.html",
+      "addressable": true
+    },
+    {
+      "path": "tasks/UploadPostmanHtmlReport",
+      "addressable": false
+    },
+    {
+      "path": "template.html",
+      "packagePath": "/template.html",
+      "addressable": true
+    },
+    {
+      "path": "dist",
+      "addressable": true
+    },
+    {
+      "path": "src",
+      "addressable": true
+    },
+    {
+      "path": "node_modules/vss-web-extension-sdk/lib",
+      "packagePath": "lib",
+      "addressable": true
+    },
+    {
+      "path": "lib/fetch.js",
+      "packagePath": "fetch.js",
+      "addressable": true
+    },
+    {
+      "path": "lib/mustache.min.js",
+      "packagePath": "/mustache.min.js",
+      "addressable": true
+    },
+    {
+      "path": "images",
       "addressable": true
     }
   ],
