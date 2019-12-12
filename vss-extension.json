@@ -5,11 +5,15 @@
   "publisher": "MaciejMaciejewski",
   "public": true,
   "author": "Maciej Maciejewski",
-  "version": "0.1.22",
+  "version": "0.1.32",
   "description": "Embed Postman HTML reports in Azure Pipelines",
   "galleryFlags": [
     "Preview"
   ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/maciejmaciejewski/azure-pipelines-postman"
+  },
   "targets": [{ "id": "Microsoft.VisualStudio.Services" }],
   "scopes": [
     "vso.build_execute",

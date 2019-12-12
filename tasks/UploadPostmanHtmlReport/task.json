@@ -4,7 +4,8 @@
   "friendlyName": "Upload Postman HTML Report",
   "description": "Upload Postman HTML Report",
   "author": "Maciej Maciejewski",
-  "helpMarkDown": "Replace with markdown to show in help",
+  "helpUrl": "https://github.com/maciejmaciejewski/azure-pipelines-postman#usage-examples",
+  "helpMarkDown": "[More Information](https://github.com/maciejmaciejewski/azure-pipelines-postman#usage-examples)",
   "category": "Utility",
   "visibility": [
     "Build",
@@ -14,18 +15,18 @@
   "version": {
     "Major": "1",
     "Minor": "0",
-    "Patch": "20"
+    "Patch": "33"
   },
   "minimumAgentVersion": "1.95.0",
-  "instanceNameFormat": "UploadPostmanHtmlReport",
+  "instanceNameFormat": "Upload Postman Html Report",
   "inputs": [
     {
       "name": "cwd",
       "type": "filePath",
       "label": "Report Path",
       "defaultValue": "$(System.DefaultWorkingDirectory)",
-      "required": false,
-      "helpMarkDown": "Current working directory when UploadPostmanHtmlReport is run."
+      "required": true,
+      "helpMarkDown": "Directory where html report files are stored"
     }
   ],
   "execution": {

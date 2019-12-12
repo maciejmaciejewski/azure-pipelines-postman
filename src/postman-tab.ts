@@ -23,7 +23,7 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
 
     protected setFrameHtmlContent(htmlStr: string) {
       const htmlContainer = this.getElement().get(0);
-      const frame = htmlContainer.querySelector("#protractor-result") as HTMLIFrameElement;
+      const frame = htmlContainer.querySelector("#postman-result") as HTMLIFrameElement;
       const waiting = htmlContainer.querySelector("#waiting") as HTMLElement;
 
       if (htmlStr && frame && waiting) {
@@ -42,8 +42,9 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
   class BuildProtractorReportTab extends BaseProtractorReportTab {
     config: TFS_Build_Extension_Contracts.IBuildResultsViewExtensionConfig = VSS.getConfiguration()
     hubName: string = "build"
-    attachmentType: string = "postman.report"
-    // attachmentName: string = "protractor_report.json"
+    attachmentName: string = 'summary.json'
+    reportAttachmentType: string = "postman.report"
+    summaryAttachmentType: string = "postman.summary"
 
     constructor() {
       super()
@@ -70,21 +71,30 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
         const projectId = vsoContext.project.id;
         const planId = build.orchestrationPlan.planId;
 
-        const postmanReports = await taskClient.getPlanAttachments(projectId, this.hubName, planId, this.attachmentType)
-        console.log(postmanReports)
+        const postmanReports = await taskClient.getPlanAttachments(projectId, this.hubName, planId, this.reportAttachmentType)
+        const postmanSummary = (await taskClient.getPlanAttachments(projectId, this.hubName, planId, this.summaryAttachmentType)).find(attachment => attachment.name === this.attachmentName)
+
+        this.setTabText('Processing Report')
+        const summaryContent = await taskClient.getAttachmentContent(projectId, this.hubName, planId, postmanSummary.timelineId, postmanSummary.recordId, this.summaryAttachmentType, postmanSummary.name)
+        const summaryContentJson = JSON.parse(this.convertBufferToString(summaryContent))
+
+        console.log(summaryContentJson)
+
 
         let data = {
-          links: postmanReports.map(report => {
+          links: summaryContentJson.map(report => {
+            let rp = postmanReports.find(x => x.name === report.name)
+
             return {
+              class: report.successfull ? 'table-success' : 'table-danger',
               name: report.name,
-              href: report._links.self.href
+              href: rp._links.self.href
             }
           })
         }
 
         console.log(data)
         const renderedTemplate = mustache.render(htmlTemplate, data)
-        console.log(renderedTemplate)
         this.setFrameHtmlContent(renderedTemplate)
       } catch (err) {
         console.log(err)
@@ -95,7 +105,7 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
           spinner.style.display = 'none';
           errorBadge.style.display = 'block';
         }
-        this.setTabText('Failed to load Protractor Report')
+        this.setTabText('Failed to load Postman Report')
       }
     }
   }
