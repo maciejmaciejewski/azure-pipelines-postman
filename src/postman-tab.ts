@@ -8,9 +8,7 @@ import Controls = require("VSS/Controls");
 // @ts-ignore
 import mustache = require("mustache");
 
-abstract class BaseProtractorReportTab extends Controls.BaseControl {
-    protected static readonly ATTACHMENT_TYPE = "finastra.protractor_report";
-
+abstract class BasePostmanReportTab extends Controls.BaseControl {
     protected constructor() {
       super();
     }
@@ -39,7 +37,7 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
     }
   }
 
-  class BuildProtractorReportTab extends BaseProtractorReportTab {
+  class BuildPostmanReportTab extends BasePostmanReportTab {
     config: TFS_Build_Extension_Contracts.IBuildResultsViewExtensionConfig = VSS.getConfiguration()
     hubName: string = "build"
     attachmentName: string = 'summary.json'
@@ -63,8 +61,6 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
         let response = await fetch('./template.html')
         let htmlTemplate = await response.text()
 
-        console.log(htmlTemplate)
-
         this.setTabText('Looking for Report File')
         const vsoContext: WebContext = VSS.getWebContext();
         const taskClient: DT_Client.TaskHttpClient = DT_Client.getClient();
@@ -78,9 +74,6 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
         const summaryContent = await taskClient.getAttachmentContent(projectId, this.hubName, planId, postmanSummary.timelineId, postmanSummary.recordId, this.summaryAttachmentType, postmanSummary.name)
         const summaryContentJson = JSON.parse(this.convertBufferToString(summaryContent))
 
-        console.log(summaryContentJson)
-
-
         let data = {
           links: summaryContentJson.map(report => {
             let rp = postmanReports.find(x => x.name === report.name)
@@ -93,7 +86,6 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
           })
         }
 
-        console.log(data)
         const renderedTemplate = mustache.render(htmlTemplate, data)
         this.setFrameHtmlContent(renderedTemplate)
       } catch (err) {
@@ -111,9 +103,12 @@ abstract class BaseProtractorReportTab extends Controls.BaseControl {
   }
 
 const htmlContainer = document.getElementById("container");
+const vssConfiguration = VSS.getConfiguration();
 
-if (typeof VSS.getConfiguration().onBuildChanged === "function") {
-  BuildProtractorReportTab.enhance(BuildProtractorReportTab, htmlContainer, {});
+console.log(vssConfiguration)
+
+if (typeof vssConfiguration.onBuildChanged === "function") {
+  BuildPostmanReportTab.enhance(BuildPostmanReportTab, htmlContainer, {});
 } 
 // else if (typeof VSS.getConfiguration().releaseEnvironment === "object") {
 //   ReleaseProtractorReportTab.enhance(ReleaseProtractorReportTab, htmlContainer, {});
