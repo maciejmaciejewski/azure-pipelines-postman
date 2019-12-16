@@ -5,7 +5,7 @@
   "publisher": "MaciejMaciejewski",
   "public": true,
   "author": "Maciej Maciejewski",
-  "version": "0.1.35",
+  "version": "0.1.48",
   "description": "Embed Postman HTML reports in Azure Pipelines",
   "galleryFlags": [
     "Preview"
@@ -54,6 +54,7 @@
     },
     {
       "path": "tasks/UploadPostmanHtmlReport",
+      "packagePath": "Tasks/UploadPostmanHtmlReport",
       "addressable": false
     },
     {
@@ -93,7 +94,7 @@
     {
       "id": "build-postman-tab",
       "type": "ms.vss-build-web.build-results-tab",
-      "description": "Embed Protractor HTML report in Azure Pipelines",
+      "description": "Embed Postman HTML report in Azure Pipelines Build",
       "targets": ["ms.vss-build-web.build-results-view"],
       "properties": {
         "name": "Postman",
@@ -105,11 +106,24 @@
       "includes": ["ms.vss-releaseManagement-web.release-service-data-external"]
     },
     {
+      "id": "release-postman-tab",
+      "type": "ms.vss-web.tab",
+      "description": "Embed Postman HTML report in Azure Pipelines Release",
+      "targets": [ "ms.vss-releaseManagement-web.release-environment-editor-tab" ],
+      "properties": {
+        "name": "Postman",
+        "uri": "tab.html",
+        "registeredObjectId": "registerRelease",
+        "dynamic": true
+      },
+      "includes": ["ms.vss-releaseManagement-web.release-service-data-external"]
+    },
+    {
       "id": "UploadPostmanHtmlReport",
       "type": "ms.vss-distributed-task.task",
       "targets": ["ms.vss-distributed-task.tasks"],
       "properties": {
-        "name": "tasks/UploadPostmanHtmlReport",
+        "name": "Tasks/UploadPostmanHtmlReport",
         "displayName": "Upload Postman Report"
       }
     }

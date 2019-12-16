@@ -4,7 +4,9 @@
   "description": "Embed Postman HTML result into build and release tab",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "prepack": "npm run build",
+    "pack": "tfx extension create --json --no-color --root ./ --manifest-globs vss-extension.json --loc-root ./ --overrides-file --rev-version --output-path ./out"
   },
   "repository": {
     "type": "git",
