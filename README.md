@@ -1,6 +1,4 @@
-# WORK IN PROGRESS
-
-Due to access restrictions this extension had to be published, however currently it is under heavy development so you might expect some issues.
+# Azure Devops Postman HTML Report
 
 ## About
 
