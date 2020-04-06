@@ -50,7 +50,7 @@ SDK.ready().then(() => {
 
 function setText (message: string) {
   console.log(message)
-  const messageContainer = document.querySelector("#protractor-ext-message p")
+  const messageContainer = document.querySelector("#postman-ext-message p")
   if (messageContainer) {
     messageContainer.innerHTML = message
   }
@@ -72,8 +72,8 @@ function setError (error: Error) {
 function displayReports(attachmentClient: AttachmentClient) {
   const nbAttachments = attachmentClient.getAttachments().length
   if (nbAttachments) {
-    ReactDOM.render(<TaskAttachmentPanel attachmentClient={attachmentClient} />, document.getElementById("protractor-ext-container"))
-    document.getElementById("protractor-ext-message").style.display = "none"
+    ReactDOM.render(<TaskAttachmentPanel attachmentClient={attachmentClient} />, document.getElementById("postman-ext-container"))
+    document.getElementById("postman-ext-message").style.display = "none"
   } else {
   setError(Error("Can't find any report attachment"))
   }
