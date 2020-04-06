@@ -14,8 +14,7 @@ import { CommonServiceIds, IProjectPageService } from "azure-devops-extension-ap
 import { ObservableValue, ObservableObject } from "azure-devops-ui/Core/Observable"
 import { Observer } from "azure-devops-ui/Observer"
 import { Tab, TabBar, TabSize } from "azure-devops-ui/Tabs"
-
-import * as mustache from 'mustache'
+import { Card } from "azure-devops-ui/Card"
 
 const ATTACHMENT_TYPE = "postman.summary";
 const REPORT_ATTACHMENT_TYPE = "postman.report";
@@ -91,14 +90,53 @@ SDK.register("registerRelease", {
   }
 })
 
+interface ReportCardProps {
+  successful: boolean,
+  name: string,
+  href: string
+}
+
+class ReportCard extends React.Component<ReportCardProps> {
+  private collapsed = new ObservableValue<boolean>(true);
+  private tabInitialContent: string = '<p>Loading...</p>'
+  private content = new ObservableValue<string>(this.tabInitialContent);
+
+  constructor(props: ReportCardProps) {
+    super(props);
+  }
+
+  // public componentDidMount() {
+  // }
+
+  public render() {
+    return (
+      //<span dangerouslySetInnerHTML={ {__html: this.tabContents.get(props.selectedTabId)} } />
+      <Card
+        className="flex-grow"
+        collapsible={true}
+        collapsed={this.collapsed}
+        onCollapseClick={this.onCollapseClicked}
+        titleProps={{ text: this.props.name }}
+      >
+        {this.content}
+      </Card>
+    )
+  }
+
+  private onCollapseClicked = () => {
+    this.collapsed.value = !this.collapsed.value;
+  }
+}
+
+
 interface TaskAttachmentPanelProps {
   attachmentClient: AttachmentClient
 }
 
 export default class TaskAttachmentPanel extends React.Component<TaskAttachmentPanelProps> {
   private selectedTabId: ObservableValue<string>
-  private tabContents: ObservableObject<string>
-  private tabInitialContent: string = '<div class="wide"><p>Loading...</p></div>'
+  private tabContents: ObservableObject<JSX.Element>
+  private tabInitialContent: JSX.Element = <div className="wide"><p>Loading...</p></div>
 
   constructor(props: TaskAttachmentPanelProps) {
     super(props);
@@ -137,14 +175,19 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
           <Observer selectedTabId={this.selectedTabId} tabContents={this.tabContents}>
             {(props: { selectedTabId: string }) => {
               if ( this.tabContents.get(props.selectedTabId) === this.tabInitialContent) {
-                this.props.attachmentClient.getAttachmentContent(props.selectedTabId).then((content) => {
+                this.props.attachmentClient.getReportSummary(props.selectedTabId).then((summary) => {
+                  const cards = []
+                  for (const reportData of summary) {
+                    cards.push(<ReportCard {...reportData}/>)
+                  }
+                  const content = <div className="flex-row" style={{ flexWrap: "wrap" }}>{cards}</div>
                   this.tabContents.set(props.selectedTabId, content)
                 }).catch(error => {
-                  this.tabContents.set(props.selectedTabId, '<div class="wide"><p>Error loading report:<br/>' + error + '</p></div>')
+                  this.tabContents.set(props.selectedTabId, <div className="wide"><p>Error loading report:<br/>' + error + '</p></div>)
                   setError(error)
                 })
               }
-              return  <span dangerouslySetInnerHTML={ {__html: this.tabContents.get(props.selectedTabId)} } />
+              return  this.tabContents.get(props.selectedTabId)
             }}
           </Observer>
         </div>
@@ -164,12 +207,6 @@ abstract class AttachmentClient {
   protected appJsContent: string = undefined
   constructor() {}
 
-  async loadSummaryTemplate() {
-    console.log('Get summary template')
-    const response = await fetch('./template.html')
-    this.summaryTemplate = await response.text()
-  }
-
   // Retrieve attachments and attachment contents from AzDO
   abstract async init(): Promise<void>
 
@@ -187,7 +224,7 @@ abstract class AttachmentClient {
 
   abstract async getReportAttachments(): Promise<Attachment[] | ReleaseTaskAttachment[]>
 
-  public async getAttachmentContent(attachmentName: string): Promise<string> {
+  public async getReportSummary(attachmentName: string): Promise<ReportCardProps[]> {
     setText('Looking for Summary File')
     if (this.authHeaders === undefined) {
       console.log('Get access token')
@@ -205,19 +242,15 @@ abstract class AttachmentClient {
     const summaryContentJson = JSON.parse(await response.text())
     const reports = await this.getReportAttachments()
 
-    let data = {
-      links: summaryContentJson.map(report => {
-        let rp = reports.find(x => x.name === report.name)
-
-        return {
-          class: report.successfull ? 'table-success' : 'table-danger',
-          name: report.name,
-          href: rp._links.self.href
-        }
-      })
-    }
-    const renderedSummary = mustache.render(this.summaryTemplate, data)
-    return renderedSummary
+    let data = summaryContentJson.map(report => {
+      let rp = reports.find(x => x.name === report.name)
+      return {
+        successful: report.successfull,
+        name: report.name,
+        href: rp._links.self.href
+      }
+    })
+    return data
   }
 }
 
@@ -230,7 +263,6 @@ class BuildAttachmentClient extends AttachmentClient {
   }
 
   public async init() {
-    await this.loadSummaryTemplate()
     console.log('Get attachment list')
     const buildClient: BuildRestClient = getClient(BuildRestClient)
     this.attachments = await buildClient.getAttachments(this.build.project.id, this.build.id, ATTACHMENT_TYPE)
@@ -255,7 +287,6 @@ class BuildAttachmentClient extends AttachmentClient {
     }
 
     public async init() {
-      await this.loadSummaryTemplate()
       const releaseId = this.releaseEnvironment.releaseId
       const environmentId = this.releaseEnvironment.id
       console.log('Get project')
