@@ -118,13 +118,14 @@ class ReportCard extends React.Component<ReportCardProps> {
         onCollapseClick={this.onCollapseClicked}
         titleProps={{ text: this.props.name }}
       >
-        <span dangerouslySetInnerHTML={ {__html: "coucou"} } />
+        <span dangerouslySetInnerHTML={ {__html: this.content.value} } />
       </Card>
     )
   }
 
   private onCollapseClicked = () => {
     this.collapsed.value = !this.collapsed.value;
+    this.content.value = '<p>Loaded</p>'
   }
 }
 
