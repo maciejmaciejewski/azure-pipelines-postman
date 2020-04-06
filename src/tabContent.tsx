@@ -98,7 +98,7 @@ interface ReportCardProps {
 
 class ReportCard extends React.Component<ReportCardProps> {
   private collapsed = new ObservableValue<boolean>(true);
-  private tabInitialContent: string = '<p>Loading...</p>'
+  private tabInitialContent = '<p>Loading...</p>'
   private content = new ObservableValue<string>(this.tabInitialContent);
 
   constructor(props: ReportCardProps) {
@@ -118,6 +118,7 @@ class ReportCard extends React.Component<ReportCardProps> {
         onCollapseClick={this.onCollapseClicked}
         titleProps={{ text: this.props.name }}
       >
+        <span dangerouslySetInnerHTML={ {__html: "coucou"} } />
         {this.content}
       </Card>
     )
