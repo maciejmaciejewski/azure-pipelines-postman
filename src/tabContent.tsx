@@ -21,7 +21,9 @@ const ATTACHMENT_TYPE = "postman.summary";
 const REPORT_ATTACHMENT_TYPE = "postman.report";
 const OUR_TASK_IDS = [
   // PROD
-  "f5384bf0-1b5c-11ea-b0cc-5b064956a213"
+  "f5384bf0-1b5c-11ea-b0cc-5b064956a213",
+  // Finastra Dev
+  "0e9f302d-865d-52f6-aba0-a0e258493f6d"
 ]
 
 SDK.init()
