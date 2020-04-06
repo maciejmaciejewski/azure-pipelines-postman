@@ -112,7 +112,7 @@ class ReportCard extends React.Component<ReportCardProps> {
     super(props);
     this.commandBarItems = [
       {
-        important: true,
+        important: false,
         id: "testDownload",
         text: "Download",
         onActivate: () => {
@@ -145,6 +145,7 @@ class ReportCard extends React.Component<ReportCardProps> {
         titleProps={{ text: this.props.report.name }}
         headerIconProps={{iconName: this.props.report.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
         headerCommandBarItems={this.commandBarItems}
+        contentProps = {{contentPadding: false}}
 
 
       >
