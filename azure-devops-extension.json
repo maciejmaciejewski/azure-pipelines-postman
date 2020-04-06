@@ -3,7 +3,7 @@
   "id": "postman-report",
   "name": "Postman Report",
   "publisher": "MaciejMaciejewski",
-  "public": true,
+  "public": false,
   "author": "Maciej Maciejewski",
   "version": "0.1.48",
   "description": "Embed Postman HTML reports in Azure Pipelines",
