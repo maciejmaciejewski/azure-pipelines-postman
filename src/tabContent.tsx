@@ -180,7 +180,7 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
                   for (const reportData of summary) {
                     cards.push(<ReportCard {...reportData} key={reportData.name} />)
                   }
-                  const content = <div className="flex-row" style={{ flexWrap: "nowrap" }}>{cards}</div>
+                  const content = <div className="flex-column" style={{ flexWrap: "nowrap" }}>{cards}</div>
                   this.tabContents.set(props.selectedTabId, content)
                 }).catch(error => {
                   this.tabContents.set(props.selectedTabId, <div className="wide"><p>Error loading report:<br/>' + error + '</p></div>)
