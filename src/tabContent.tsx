@@ -130,7 +130,7 @@ class ReportCard extends React.Component<ReportCardProps> {
   public render() {
     return (
       <Card
-        className="flex-grow"
+        className={"flex-grow " + this.props.successful ? "card-success" : "card-failure"}
         collapsible={true}
         collapsed={this.collapsed}
         onCollapseClick={this.onCollapseClicked}
@@ -150,7 +150,7 @@ class ReportCard extends React.Component<ReportCardProps> {
     this.collapsed.value = !this.collapsed.value;
     if (this.content.value == this.initialContent) {
       this.loadReport().then(report => {
-        this.content.value = '<iframe srcdoc="' + this.escapeHTML(report) + '"></iframe>'
+        this.content.value = '<iframe class="flex-grow" srcdoc="' + this.escapeHTML(report) + '"></iframe>'
       }).catch(err => {
         this.content.value = err
       })

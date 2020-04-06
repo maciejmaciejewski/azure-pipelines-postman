@@ -9,3 +9,13 @@
 .bolt-header-title {
   font-family: $fontFamily;
 }
+
+.card-success {
+  color: $status-success-foreground;
+  background-color: $status-success-background;
+}
+
+.card-failure {
+  color: $status-error-foreground;
+  background-color: $status-error-background;
+}
