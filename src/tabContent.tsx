@@ -105,13 +105,23 @@ class ReportCard extends React.Component<ReportCardProps> {
     super(props);
   }
 
-  async loadReport() {
+  async private loadReport() {
     setText(`Load report ${this.props.name}`)
     const response = await fetch(this.props.href)
     if (!response.ok) {
       throw new Error(response.statusText)
     }
     return await response.text()
+  }
+
+  private escapeHTML(str: string) {
+    return str.replace(/[&<>'"]/g, tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag))
   }
 
   // public componentDidMount() {
@@ -125,6 +135,7 @@ class ReportCard extends React.Component<ReportCardProps> {
         collapsed={this.collapsed}
         onCollapseClick={this.onCollapseClicked}
         titleProps={{ text: this.props.name }}
+        headerIconProps={{iconName: this.props.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
       >
           <Observer content={this.content}>
             {(props: { content: string }) => {
@@ -139,7 +150,7 @@ class ReportCard extends React.Component<ReportCardProps> {
     this.collapsed.value = !this.collapsed.value;
     if (this.content.value == this.initialContent) {
       this.loadReport().then(report => {
-        this.content.value = report
+        this.content.value = '<iframe class="wide" srcdoc="' + this.escapeHTML(report) + '"></iframe>'
       }).catch(err => {
         this.content.value = err
       })
