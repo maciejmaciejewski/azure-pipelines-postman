@@ -150,7 +150,7 @@ class ReportCard extends React.Component<ReportCardProps> {
     this.collapsed.value = !this.collapsed.value;
     if (this.content.value == this.initialContent) {
       this.loadReport().then(report => {
-        this.content.value = '<iframe class="wide" srcdoc="' + this.escapeHTML(report) + '"></iframe>'
+        this.content.value = '<iframe srcdoc="' + this.escapeHTML(report) + '"></iframe>'
       }).catch(err => {
         this.content.value = err
       })
