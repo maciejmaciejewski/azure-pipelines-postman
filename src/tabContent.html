@@ -4,52 +4,13 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <script src="lib/VSS.SDK.min.js"></script>
-
-    <script type="text/javascript">
-    VSS.init({
-      usePlatformScripts: true,
-      moduleLoaderConfig: {
-        paths: {"enhancer": "scripts"}
-      }
-    });
-
-    let noop = function () {};
-
-    VSS.ready(function () {
-      require(["dist/postman-tab"], noop);
-      VSS.notifyLoadSucceeded();
-    });
-
-    VSS.register("registerBuild", {
-      updateContext: noop
-    });
-
-
-    VSS.register("registerRelease", {
-      updateContext: noop,
-      isInvisible: function (state) {
-        let protractorTaskId = "f5384bf0-1b5c-11ea-b0cc-5b064956a213"
-        let resultArray = []
-        state.releaseEnvironment.deployPhasesSnapshot.forEach(phase => {
-          phase.workflowTasks.forEach(task => {
-              resultArray.push(task.taskId)
-          })
-        })
-
-        return !resultArray.includes(protractorTaskId)
-      }
-    });
-  </script>
   <style>
     html, body {
       background-color: transparent !important;
       margin: 0;
       padding: 0;
     }
-    #result {
-      display: none;
-    }
+
     .wide {
       position: absolute;
       top: 20px;
@@ -61,11 +22,7 @@
       box-shadow: 0 2px 6px 2px rgba(0, 0, 0, .05);
     }
 
-    #postman-result {
-      display: none
-    }
-
-    #waiting p {
+    #postman-ext-message p, .wide p {
       padding: 0;
       margin: auto 0;
       font-family: arial, serif;
@@ -109,13 +66,12 @@
 </head>
 
 <body>
-<div id="container">
-  <div id="waiting" class="wide">
+  <div id="postman-ext-message" class="wide">
     <div class="spinner"></div>
     <div class="error-badge"></div>
     <p>Waiting for task results...</p>
   </div>
-  <iframe id="postman-result" class="wide" src="about:blank"></iframe>
-</div>
+  <div id="postman-ext-container"/>
+  <script type="text/javascript" src="tabContent.js" charset="utf-8"></script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+resources:
+  repositories:
+  - repository: 'templates'
+    type: 'git'
+    name: 'FusionOperate/pipeline_templates'
+    ref: 'refs/heads/master'
+
+trigger:
+- feature/multistage
+
+jobs:
+- template: tmpl/extensions/publish_extension.yml@templates
+  parameters:
+    version: 1.0 # .$(Build.BuildId) will be appended by the template
+    extensionName: Postman Extension
+    extensionId: postman-report
