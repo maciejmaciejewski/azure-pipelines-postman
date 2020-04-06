@@ -97,7 +97,7 @@ interface ReportCardProps {
 }
 
 class ReportCard extends React.Component<ReportCardProps> {
-  private collapsed = new ObservableValue<boolean>(false);
+  private collapsed = new ObservableValue<boolean>(true);
   private initialContent = '<p>Loading...</p>'
   private content = new ObservableValue<string>(this.initialContent);
 
@@ -105,12 +105,20 @@ class ReportCard extends React.Component<ReportCardProps> {
     super(props);
   }
 
+  async loadReport() {
+    setText(`Load report ${this.props.name}`)
+    const response = await fetch(this.props.href)
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    return await response.text()
+  }
+
   // public componentDidMount() {
   // }
 
   public render() {
     return (
-      //<span dangerouslySetInnerHTML={ {__html: this.tabContents.get(props.selectedTabId)} } />
       <Card
         className="flex-grow"
         collapsible={true}
@@ -129,7 +137,13 @@ class ReportCard extends React.Component<ReportCardProps> {
 
   private onCollapseClicked = () => {
     this.collapsed.value = !this.collapsed.value;
-    this.content.value = '<p>Loaded</p>'
+    if (this.content.value == this.initialContent) {
+      this.loadReport().then(report => {
+        this.content.value = report
+      }).catch(err => {
+        this.content.value = err
+      })
+    }
   }
 }
 
