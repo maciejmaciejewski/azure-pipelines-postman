@@ -113,16 +113,6 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
     // });
   }
 
-  public escapeHTML(str: string) {
-    return str.replace(/[&<>'"]/g, tag => ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          "'": '&#39;',
-          '"': '&quot;'
-        }[tag] || tag))
-  }
-
   public render() {
     const attachments = this.props.attachmentClient.getAttachments()
     if (attachments.length == 0) {
@@ -148,7 +138,7 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
             {(props: { selectedTabId: string }) => {
               if ( this.tabContents.get(props.selectedTabId) === this.tabInitialContent) {
                 this.props.attachmentClient.getAttachmentContent(props.selectedTabId).then((content) => {
-                  this.tabContents.set(props.selectedTabId, '<iframe class="wide" srcdoc="' + this.escapeHTML(content) + '"></iframe>')
+                  this.tabContents.set(props.selectedTabId, content)
                 }).catch(error => {
                   this.tabContents.set(props.selectedTabId, '<div class="wide"><p>Error loading report:<br/>' + error + '</p></div>')
                   setError(error)
