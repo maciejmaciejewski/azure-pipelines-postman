@@ -90,10 +90,15 @@ SDK.register("registerRelease", {
   }
 })
 
-interface ReportCardProps {
+interface ReportProps {
   successful: boolean,
   name: string,
   href: string
+}
+
+interface ReportCardProps {
+  attachmentClient: AttachmentClient,
+  report: ReportProps,
 }
 
 class ReportCard extends React.Component<ReportCardProps> {
@@ -103,15 +108,6 @@ class ReportCard extends React.Component<ReportCardProps> {
 
   constructor(props: ReportCardProps) {
     super(props);
-  }
-
-  private async loadReport() {
-    setText(`Load report ${this.props.name}`)
-    const response = await fetch(this.props.href)
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    return await response.text()
   }
 
   private escapeHTML(str: string) {
@@ -124,18 +120,15 @@ class ReportCard extends React.Component<ReportCardProps> {
         }[tag] || tag))
   }
 
-  // public componentDidMount() {
-  // }
-
   public render() {
     return (
       <Card
-        className={"flex-grow " + (this.props.successful ? "card-success" : "card-failure")}
+        className={"flex-grow " + (this.props.report.successful ? "card-success" : "card-failure")}
         collapsible={true}
         collapsed={this.collapsed}
         onCollapseClick={this.onCollapseClicked}
-        titleProps={{ text: this.props.name }}
-        headerIconProps={{iconName: this.props.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
+        titleProps={{ text: this.props.report.name }}
+        headerIconProps={{iconName: this.props.report.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
       >
           <Observer content={this.content}>
             {(props: { content: string }) => {
@@ -149,7 +142,7 @@ class ReportCard extends React.Component<ReportCardProps> {
   private onCollapseClicked = () => {
     this.collapsed.value = !this.collapsed.value;
     if (this.content.value == this.initialContent) {
-      this.loadReport().then(report => {
+      this.props.attachmentClient.download(this.props.report.href).then(report => {
         this.content.value = '<iframe class="full-size" srcdoc="' + this.escapeHTML(report) + '"></iframe>'
       }).catch(err => {
         this.content.value = err
@@ -208,7 +201,8 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
                 this.props.attachmentClient.getReportSummary(props.selectedTabId).then((summary) => {
                   const cards = []
                   for (const reportData of summary) {
-                    cards.push(<ReportCard {...reportData} key={reportData.name} />)
+                    const cardProps: ReportCardProps = {report: reportData, attachmentClient: this.props.attachmentClient}
+                    cards.push(<ReportCard {...cardProps} key={reportData.name} />)
                   }
                   const content = <div className="flex-column" style={{ flexWrap: "nowrap" }}>{cards}</div>
                   this.tabContents.set(props.selectedTabId, content)
@@ -244,6 +238,24 @@ abstract class AttachmentClient {
     return this.attachments
   }
 
+  private async getAuthHeaders(): Promise<Object> {
+    if (this.authHeaders === undefined) {
+      console.log('Get access token')
+      const accessToken = await SDK.getAccessToken()
+      const b64encodedAuth = Buffer.from(':' + accessToken).toString('base64')
+      this.authHeaders = { headers: {'Authorization': 'Basic ' + b64encodedAuth} }
+    }
+    return this.authHeaders
+  }
+
+  public async download(href: string): Promise<string> {
+    const response = await fetch(href, (await this.getAuthHeaders()))
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    return await response.text()
+  }
+
   public getDownloadableAttachment(attachmentName: string): Attachment | ReleaseTaskAttachment {
     const attachment = this.attachments.find((attachment) => { return attachment.name === attachmentName})
     if (!(attachment && attachment._links && attachment._links.self && attachment._links.self.href)) {
@@ -254,24 +266,13 @@ abstract class AttachmentClient {
 
   abstract async getReportAttachments(): Promise<Attachment[] | ReleaseTaskAttachment[]>
 
-  public async getReportSummary(attachmentName: string): Promise<ReportCardProps[]> {
+  public async getReportSummary(attachmentName: string): Promise<ReportProps[]> {
     setText('Looking for Summary File')
-    if (this.authHeaders === undefined) {
-      console.log('Get access token')
-      const accessToken = await SDK.getAccessToken()
-      const b64encodedAuth = Buffer.from(':' + accessToken).toString('base64')
-      this.authHeaders = { headers: {'Authorization': 'Basic ' + b64encodedAuth} }
-    }
     console.log("Get " + attachmentName + " attachment content")
     const attachment = this.getDownloadableAttachment(attachmentName)
-    const response = await fetch(attachment._links.self.href, this.authHeaders)
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
+    const summaryContentJson = JSON.parse(await this.download(attachment._links.self.href))
     setText('Processing Summary File')
-    const summaryContentJson = JSON.parse(await response.text())
     const reports = await this.getReportAttachments()
-
     let data = summaryContentJson.map(report => {
       let rp = reports.find(x => x.name === report.name)
       return {
