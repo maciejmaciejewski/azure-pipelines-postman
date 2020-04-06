@@ -15,6 +15,7 @@ import { ObservableValue, ObservableObject } from "azure-devops-ui/Core/Observab
 import { Observer } from "azure-devops-ui/Observer"
 import { Tab, TabBar, TabSize } from "azure-devops-ui/Tabs"
 import { Card } from "azure-devops-ui/Card"
+import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
 
 const ATTACHMENT_TYPE = "postman.summary";
 const REPORT_ATTACHMENT_TYPE = "postman.report";
@@ -104,10 +105,24 @@ interface ReportCardProps {
 class ReportCard extends React.Component<ReportCardProps> {
   private collapsed = new ObservableValue<boolean>(true);
   private initialContent = '<p>Loading...</p>'
-  private content = new ObservableValue<string>(this.initialContent);
+  private content = new ObservableValue<string>(this.initialContent)
+  private commandBarItems: IHeaderCommandBarItem[]
 
   constructor(props: ReportCardProps) {
     super(props);
+    this.commandBarItems = [
+      {
+        important: true,
+        id: "testDownload",
+        text: "Download",
+        onActivate: () => {
+          window.open(this.props.report.href)
+        },
+        iconProps: {
+          iconName: "Download"
+        }
+      }
+    ]
   }
 
   private escapeHTML(str: string) {
@@ -129,6 +144,9 @@ class ReportCard extends React.Component<ReportCardProps> {
         onCollapseClick={this.onCollapseClicked}
         titleProps={{ text: this.props.report.name }}
         headerIconProps={{iconName: this.props.report.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
+        headerCommandBarItems={this.commandBarItems}
+
+
       >
           <Observer content={this.content}>
             {(props: { content: string }) => {
