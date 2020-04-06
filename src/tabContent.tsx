@@ -105,7 +105,7 @@ class ReportCard extends React.Component<ReportCardProps> {
     super(props);
   }
 
-  async private loadReport() {
+  private async loadReport() {
     setText(`Load report ${this.props.name}`)
     const response = await fetch(this.props.href)
     if (!response.ok) {
