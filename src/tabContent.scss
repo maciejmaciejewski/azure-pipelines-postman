@@ -1,14 +1,12 @@
 @import "node_modules/azure-devops-ui/Core/_platformCommon.scss";
 
+#postman-ext-container {
+  font-family: $fontFamily;
+}
 .bolt-tabbar-tabs {
     font-size: $fontSizeM;
     margin-bottom: 10px;
-    font-family: $fontFamily;
   }
-
-.bolt-header-title, button.bolt-button {
-  font-family: $fontFamily;
-}
 
 .card-success {
   color: $status-success-foreground;
