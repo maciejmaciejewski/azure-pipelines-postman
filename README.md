@@ -13,6 +13,14 @@ In order to use this extension first add `Upload Postman HTML Report` task to yo
 
 This tasks requires only one parameter which is path to the location where HTML reports are stored.
 
+```YAML
+steps:
+- task: UploadPostmanHtmlReport@1
+  displayName: 'Upload Postman Html Report'
+  inputs:
+    cwd: '$(System.DefaultWorkingDirectory)'
+```
+
 ![](./docs/postman-report-2.png)
 
 ## Example
@@ -27,7 +35,7 @@ This tasks requires only one parameter which is path to the location where HTML 
 <table>
   <tr>
       <td align="center">
-      <a href="https://github.com/afeblot">
+      <a href="https://github.com/maciejmaciejewski">
         <img src="https://avatars1.githubusercontent.com/u/15831316?v=4" width="100px;" alt=""/>
         <br />
         <b>Maciej Maciejewski</b>
