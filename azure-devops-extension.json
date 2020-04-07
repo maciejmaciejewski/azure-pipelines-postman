@@ -5,11 +5,9 @@
   "publisher": "MaciejMaciejewski",
   "public": false,
   "author": "Maciej Maciejewski",
-  "version": "0.1.48",
+  "version": "1.1.0",
   "description": "Embed Postman HTML reports in Azure Pipelines",
-  "galleryFlags": [
-    "Preview"
-  ],
+  "galleryFlags": [],
   "repository": {
     "type": "git",
     "uri": "https://github.com/maciejmaciejewski/azure-pipelines-postman"
@@ -27,6 +25,7 @@
   ],
   "tags": [
     "Postman",
+    "Newman",
     "Build",
     "Release",
     "Azure Pipelines",

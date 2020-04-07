@@ -9,7 +9,7 @@ const template = /Failed Tests ([0-9]*)/
 function run () {
   let cwd = resolve(tl.getPathInput('cwd', true))
 
-  let files = globby.sync([cwd], {expandDirectories : {files: ['*'], extensions: ['html']}})
+  let files = globby.sync([cwd.replace(/\\/g, '/')], {expandDirectories : {files: ['*'], extensions: ['html']}})
 
   const fileProperties = []
 
