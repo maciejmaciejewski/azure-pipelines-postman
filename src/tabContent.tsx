@@ -115,7 +115,7 @@ class ReportCard extends React.Component<ReportCardProps> {
         important: true,
         id: "Download",
         text: "Download",
-        href: this.props.report.href
+        href: this.props.report.href,
         // onActivate: () => {
         //   window.open(this.props.report.href)
         // },
