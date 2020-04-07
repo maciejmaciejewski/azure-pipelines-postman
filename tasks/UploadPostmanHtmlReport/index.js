@@ -3,13 +3,13 @@ const { resolve, basename, join } = require('path')
 const globby = require('globby')
 const { readFileSync, writeFileSync } = require('fs')
 const { load } = require('cheerio')
-const forbidenKeys = ['password', 'client_secret', 'access_token', 'refresh_token']
+const forbiddenKeys = ['password', 'client_secret', 'access_token', 'refresh_token']
 const template = /Failed Tests ([0-9]*)/
 
 function run () {
   let cwd = resolve(tl.getPathInput('cwd', true))
 
-  let files = globby.sync([cwd], {expandDirectories : {files: ['*'], extensions: ['html']}})
+  let files = globby.sync([cwd.replace(/\\/g, '/')], {expandDirectories : {files: ['*'], extensions: ['html']}})
 
   const fileProperties = []
 
@@ -21,15 +21,15 @@ function run () {
     tl.debug(`Anonimizing report`)
     // Anonimize Report
     removeTokenFromHeader(document)
-    removeForbidenKeys(document, "h5:contains('Request Body')")
-    removeForbidenKeys(document, "h5:contains('Response Body')")
+    removeForbiddenKeys(document, "h5:contains('Request Body')")
+    removeForbiddenKeys(document, "h5:contains('Response Body')")
     writeFileSync(file, document.html())
 
     tl.debug(`Uploading report`)
     const attachmentProperties = {
       name: basename(file),
       type: 'postman.report',
-      successfull: checkIfSuccessfull(document)
+      successfull: checkIfSuccessful(document)
     }
 
     fileProperties.push(attachmentProperties)
@@ -38,20 +38,21 @@ function run () {
 
   const summaryPath = resolve(join(cwd,'summary.json'))
   writeFileSync(summaryPath, JSON.stringify(fileProperties))
-  tl.command('task.addattachment', { name: 'summary.json', type: 'postman.summary'}, summaryPath)
+
+  tl.command('task.addattachment', { name: tl.getVariable('System.StageName') || 'summary', type: 'postman.summary'}, summaryPath)
 }
 
 function removeTokenFromHeader (document) {
   document(`td:contains('Bearer')`).replaceWith('<td>Bearer ***</td>')
 }
 
-function checkIfSuccessfull (document) {
+function checkIfSuccessful (document) {
   const text = document("div.card-header").find("a:contains('Failed Tests')").text()
   const result = new Number(text.match(template)[1])
   return result > 0 ? false : true
 }
 
-function removeForbidenKeys (document, selector) {
+function removeForbiddenKeys (document, selector) {
   document(selector).nextAll().find(document('code')).each(function (x, y) {
     const body = document(this).text()
 
@@ -59,7 +60,7 @@ function removeForbidenKeys (document, selector) {
       const ob = JSON.parse(body)
 
       Object.keys(ob).forEach((k) => {
-        if (forbidenKeys.includes(k)) {
+        if (forbiddenKeys.includes(k)) {
           ob[k] = '***'
         }
       })
