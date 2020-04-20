@@ -75,7 +75,7 @@ function displayReports(attachmentClient: AttachmentClient) {
     ReactDOM.render(<TaskAttachmentPanel attachmentClient={attachmentClient} />, document.getElementById("postman-ext-container"))
     document.getElementById("postman-ext-message").style.display = "none"
   } else {
-  setError(Error("Can't find any report attachment"))
+  setError(Error("Could not find any report attachment"))
   }
 }
 
@@ -195,7 +195,10 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
     } else {
       const tabs = []
       for (const attachment of attachments) {
-        tabs.push(<Tab name={attachment.name} id={attachment.name} key={attachment.name} url={attachment._links.self.href}/>)
+        const metadata = attachment.name.split('.')
+        const name = metadata[2] !== '__default' ? `${metadata[0]} #${metadata[3]}` : metadata[0]
+
+        tabs.push(<Tab name={name} id={attachment.name} key={attachment.name} url={attachment._links.self.href}/>)
         this.tabContents.add(attachment.name, this.tabInitialContent)
       }
       return (
@@ -204,8 +207,7 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
             <TabBar
               onSelectedTabChanged={this.onSelectedTabChanged}
               selectedTabId={this.selectedTabId}
-              tabSize={TabSize.Tall}
-            >
+              tabSize={TabSize.Tall}>
               {tabs}
             </TabBar>
           : null }

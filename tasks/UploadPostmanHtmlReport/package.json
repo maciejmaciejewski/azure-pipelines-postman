@@ -1,6 +1,6 @@
 {
   "name": "uploadpostmanhtmlreport",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,8 @@
   "dependencies": {
     "azure-pipelines-task-lib": "^2.8.0",
     "cheerio": "^1.0.0-rc.3",
-    "globby": "^10.0.1"
+    "dashify": "^2.0.0",
+    "globby": "^10.0.1",
+    "hat": "0.0.3"
   }
 }
