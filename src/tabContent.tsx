@@ -197,9 +197,12 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
       return (null)
     } else {
       const tabs = []
+      let tabNameCount = {}
+      attachments.map(attachment => attachment.name.split('.')[0]).forEach(el => tabNameCount[el] = 1  + (tabNameCount[el] || 0))
       for (const attachment of attachments) {
         const metadata = attachment.name.split('.')
-        const name = metadata[2] !== '__default' ? `${metadata[0]} #${metadata[3]}` : metadata[0]
+        // Conditionally add counter for multistage pipeline with more than one attempt
+        const name = (metadata[2] !== '__default' && tabNameCount[metadata[0]] > 1) ? `${metadata[0]} #${metadata[3]}` : metadata[0]
 
         tabs.push(<Tab name={name} id={attachment.name} key={attachment.name} url={attachment._links.self.href}/>)
         this.tabContents.add(attachment.name, this.tabInitialContent)
