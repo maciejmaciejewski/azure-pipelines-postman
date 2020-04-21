@@ -5,6 +5,8 @@ const { readFileSync, writeFileSync } = require('fs')
 const { load } = require('cheerio')
 const forbiddenKeys = ['password', 'client_secret', 'access_token', 'refresh_token']
 const template = /Failed Tests ([0-9]*)/
+const dashify = require('dashify')
+const hat = require('hat')
 
 function run () {
   let cwd = resolve(tl.getPathInput('cwd', true))
