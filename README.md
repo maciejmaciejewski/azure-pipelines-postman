@@ -11,7 +11,7 @@ Tab contains embeded reports as well as direct download links.
 
 In order to use this extension first add `Upload Postman HTML Report` task to your pipeline. In your Postman / Newman execution task add `htmlextra` reporter that will generate `HTML` reports.
 
-This tasks requires only one parameter which is path to the location where HTML reports are stored.
+This tasks takes two parameters - required `cwd` which is path to the location where Postman / Newman HTML reports are stored and also optional `tabName` which is the name of the tab displayed within Azure DevOps report.
 
 ```YAML
 steps:
@@ -19,6 +19,7 @@ steps:
   displayName: 'Upload Postman Html Report'
   inputs:
     cwd: '$(System.DefaultWorkingDirectory)'
+    tabName: 'Postman Test'
 ```
 
 ![](./docs/postman-report-2.png)
