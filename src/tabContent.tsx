@@ -134,6 +134,14 @@ class ReportCard extends React.Component<ReportCardProps> {
   }
 
   public render() {
+    const metadata = this.props.report.name.split('.')
+    let reportName
+    if(metadata.length > 2) {
+      reportName = metadata[4] + metadata[5]
+    } else {
+      // For old build with backward compatibility
+      reportName = metadata
+    }
     return (
       <Card
         className={"flex-grow " + (this.props.report.successful ? "card-success" : "card-failure")}
@@ -142,8 +150,7 @@ class ReportCard extends React.Component<ReportCardProps> {
         onCollapseClick={this.onCollapseClicked}
         titleProps={{ text: this.props.report.name }}
         headerIconProps={{iconName: this.props.report.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
-        headerCommandBarItems={this.commandBarItems}
-      >
+        headerCommandBarItems={this.commandBarItems}>
           <Observer content={this.content}>
             {(props: { content: string }) => {
               return  <span className="full-size" dangerouslySetInnerHTML={ {__html: props.content} } />

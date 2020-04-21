@@ -29,7 +29,7 @@ function run () {
 
     tl.debug(`Uploading report`)
     const attachmentProperties = {
-      name: generateName(),
+      name: generateName(basename(file)),
       type: 'postman.report',
       successfull: checkIfSuccessful(document)
     }
@@ -41,17 +41,16 @@ function run () {
   const summaryPath = resolve(join(cwd,'summary.json'))
   writeFileSync(summaryPath, JSON.stringify(fileProperties))
 
-  tl.command('task.addattachment', { name: generateName(), type: 'postman.summary'}, summaryPath)
+  tl.command('task.addattachment', { name: generateName('summary.json'), type: 'postman.summary'}, summaryPath)
 }
 
-function generateName () {
+function generateName (fileName) {
   const jobName = dashify(tl.getVariable('Agent.JobName'))
   const stageName = dashify(tl.getVariable('System.StageDisplayName'))
   const stageAttempt = tl.getVariable('System.StageAttempt')
   const tabName = tl.getInput('tabName', false ) || 'Postman'
-  const uniqueId = hat()
 
-  return `${tabName}.${jobName}.${stageName}.${stageAttempt}.${uniqueId}`
+  return `${tabName}.${jobName}.${stageName}.${stageAttempt}.${fileName}`
 }
 
 function removeTokenFromHeader (document) {
