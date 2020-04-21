@@ -247,7 +247,7 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
 }
 
 abstract class AttachmentClient {
-  protected attachments: Attachment[]  | ReleaseTaskAttachment[] = []
+  protected attachments: (Attachment  | ReleaseTaskAttachment)[] = []
   protected authHeaders: Object = undefined
   protected summaryTemplate: string = undefined
   protected appJsContent: string = undefined
@@ -256,7 +256,7 @@ abstract class AttachmentClient {
   // Retrieve attachments and attachment contents from AzDO
   abstract async init(): Promise<void>
 
-  public getAttachments() : Attachment[]  | ReleaseTaskAttachment[] {
+  public getAttachments() : (Attachment  | ReleaseTaskAttachment)[] {
     return this.attachments
   }
 
