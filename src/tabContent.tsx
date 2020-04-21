@@ -134,21 +134,24 @@ class ReportCard extends React.Component<ReportCardProps> {
   }
 
   public render() {
+    const metadata = this.props.report.name.split('.')
+    // Extract HTML file name and maintain backward compatibility for old builds
+    const reportName = (metadata.length > 2) ? `${metadata[4]}.${metadata[5]}` : this.props.report.name
     return (
       <Card
         className={"flex-grow " + (this.props.report.successful ? "card-success" : "card-failure")}
         collapsible={true}
         collapsed={this.collapsed}
         onCollapseClick={this.onCollapseClicked}
-        titleProps={{ text: this.props.report.name }}
+        titleProps={{ text: reportName }}
         headerIconProps={{iconName: this.props.report.successful ? 'SkypeCircleCheck' : 'StatusErrorFull'}}
-        headerCommandBarItems={this.commandBarItems}
-      >
-          <Observer content={this.content}>
-            {(props: { content: string }) => {
-              return  <span className="full-size" dangerouslySetInnerHTML={ {__html: props.content} } />
-            }}
-          </Observer>
+        headerCommandBarItems={this.commandBarItems}>
+
+        <Observer content={this.content}>
+          {(props: { content: string }) => {
+            return  <span className="full-size" dangerouslySetInnerHTML={ {__html: props.content} } />
+          }}
+        </Observer>
       </Card>
     )
   }
@@ -194,9 +197,12 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
       return (null)
     } else {
       const tabs = []
+      let tabNameCount = {}
+      attachments.map(attachment => attachment.name.split('.')[0]).forEach(el => tabNameCount[el] = 1  + (tabNameCount[el] || 0))
       for (const attachment of attachments) {
         const metadata = attachment.name.split('.')
-        const name = metadata[2] !== '__default' ? `${metadata[0]} #${metadata[3]}` : metadata[0]
+        // Conditionally add counter for multistage pipeline with more than one attempt
+        const name = (metadata[2] !== '__default' && tabNameCount[metadata[0]] > 1) ? `${metadata[0]} #${metadata[3]}` : metadata[0]
 
         tabs.push(<Tab name={name} id={attachment.name} key={attachment.name} url={attachment._links.self.href}/>)
         this.tabContents.add(attachment.name, this.tabInitialContent)
@@ -241,7 +247,7 @@ export default class TaskAttachmentPanel extends React.Component<TaskAttachmentP
 }
 
 abstract class AttachmentClient {
-  protected attachments: Attachment[]  | ReleaseTaskAttachment[] = []
+  protected attachments: (Attachment  | ReleaseTaskAttachment)[] = []
   protected authHeaders: Object = undefined
   protected summaryTemplate: string = undefined
   protected appJsContent: string = undefined
@@ -250,7 +256,7 @@ abstract class AttachmentClient {
   // Retrieve attachments and attachment contents from AzDO
   abstract async init(): Promise<void>
 
-  public getAttachments() : Attachment[]  | ReleaseTaskAttachment[] {
+  public getAttachments() : (Attachment  | ReleaseTaskAttachment)[] {
     return this.attachments
   }
 

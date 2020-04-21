@@ -27,6 +27,14 @@
       "defaultValue": "$(System.DefaultWorkingDirectory)",
       "required": true,
       "helpMarkDown": "Directory where html report files are stored"
+    },
+    {
+      "name": "tabName",
+      "type": "string",
+      "label": "Report tab name",
+      "defaultValue": "Postman",
+      "required": false,
+      "helpMarkDown": "Name of the tab displayed in the report"
     }
   ],
   "execution": {
