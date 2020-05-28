@@ -88,4 +88,9 @@ function removeForbiddenKeys (document, selector) {
   })
 }
 
-run()
+try {
+  run()
+} catch (error) {
+  tl.warning(error.stack)
+  tl.setResult(tl.TaskResult.SucceededWithIssues)
+}
