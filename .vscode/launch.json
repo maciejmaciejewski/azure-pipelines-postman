@@ -11,7 +11,11 @@
       "program": "${workspaceFolder}/tasks/UploadPostmanHtmlReport/index.js",
       "outputCapture": "std",
       "env": {
-        "INPUT_CWD": "C:/workspace/empty-repo/NewmanResults"
+        "AGENT_JOBNAME": "jobname",
+        "SYSTEM_DISPLAYNAME": "displayname",
+        "SYSTEM_STAGEDISPLAYNAME": "stagedisplayname",
+        "SYSTEM_STAGEATTEMPT": 1,
+        "INPUT_CWD": "${workspaceFolder}/tasks/UploadPostmanHtmlReport/test"
       },
       "skipFiles": [
         "<node_internals>/**"
