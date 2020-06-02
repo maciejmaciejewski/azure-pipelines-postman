@@ -3,7 +3,7 @@ const { resolve, basename, join } = require('path')
 const globby = require('globby')
 const { readFileSync, writeFileSync } = require('fs')
 const { load } = require('cheerio')
-const forbiddenKeys = ['password', 'client_secret', 'access_token', 'refresh_token', 'value']
+const forbiddenKeys = ['password', 'client_secret', 'access_token', 'refresh_token']
 const template = /Failed Tests ([0-9]*)/
 const dashify = require('dashify')
 const hat = require('hat')
@@ -64,6 +64,7 @@ function checkIfSuccessful (document) {
 }
 
 function removeForbiddenKeys (document, selector) {
+  let flag = false
   document(selector).nextAll().find(document('code')).each(function (x, y) {
     const body = document(this).text()
 
@@ -71,6 +72,10 @@ function removeForbiddenKeys (document, selector) {
       const ob = JSON.parse(body)
 
       Object.keys(ob).forEach((k) => {
+        if (ob[k] === "Application secret") {
+          forbiddenKeys.push('value')
+          flag = true
+        }
         if (forbiddenKeys.includes(k)) {
           ob[k] = '***'
         }
@@ -86,6 +91,9 @@ function removeForbiddenKeys (document, selector) {
       // Skip if data is non JSON
     }
   })
+  if (flag) {
+    forbiddenKeys.pop()
+  }
 }
 
 try {
