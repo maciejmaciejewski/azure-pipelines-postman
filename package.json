@@ -5,13 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf ./dist",
-    "build:cidev": "npm run clean && webpack --mode development",
-    "build": "npm run clean && webpack --mode development",
-    "postbuild": "npm run package-extension",
-    "postinstall": "cd tasks/UploadPostmanHtmlReport && npm install",
-    "test": "echo No test available",
-    "prune": "npm prune --production --ignore-scripts",
-    "package-extension": "tfx extension create --manifest-globs azure-devops-extension.json --overrides-file dev_manifest.json"
+    "build": "npm run clean && webpack --mode development"
   },
   "repository": {
     "type": "git",
