@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "postman-report",
+  "id": "azure-pipelines-postman",
   "name": "Postman Report",
   "publisher": "MaciejMaciejewski",
   "public": false,
