@@ -59,7 +59,13 @@ function removeTokenFromHeader (document) {
 
 function checkIfSuccessful (document) {
   const text = document("div.card-header").find("a:contains('Failed Tests')").text()
-  const result = new Number(text.match(template)[1])
+  const result = 0
+  if(text != null){
+	  if(text.match(template) != null){
+		  result = new Number(text.match(template)[1])
+	  }
+  }
+  
   return result > 0 ? false : true
 }
 
